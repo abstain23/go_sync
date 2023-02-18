@@ -61,7 +61,7 @@ func main() {
 		r.Run(":" + port)
 	}()
 
-	ui, _ := lorca.New("http://127.0.0.1:"+port+"/static/index.html", "", 800, 600, "--disable-sync", "--disable-translate", "--disable-automation")
+	ui, _ := lorca.New("http://127.0.0.1:"+port+"/static/index.html", "", 800, 600, "--disable-sync", "--disable-translate")
 	chSignal := make(chan os.Signal, 1)
 
 	signal.Notify(chSignal, os.Interrupt)
