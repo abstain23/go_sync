@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -85,4 +87,24 @@ func TextsController(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"url": "/" + "uploads/" + fileName}) // 返回文件的绝对路径（不含 exe 所在目录）
 	}
 
+}
+
+func BigFileController(c *gin.Context) {
+	fmt.Println("ffff")
+	c.Request.ParseMultipartForm(32 << 20)
+	file, _, err := c.Request.FormFile("row")
+	if err != nil {
+		fmt.Fprintln(c.Writer, err)
+		return
+	}
+	defer file.Close()
+	f, err := os.OpenFile("./test.txt", os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Fprintf(c.Writer, "Failed to open the file for writing")
+		return
+	}
+	defer f.Close()
+	io.Copy(f, file)
+	fmt.Fprintln(c.Writer, "File uploaded successfully")
+	c.JSON(http.StatusOK, gin.H{"url": "/" + "uploads/" + "test.txt"})
 }

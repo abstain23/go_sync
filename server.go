@@ -29,13 +29,14 @@ func StartGinServer() {
 	staticFiles, _ := fs.Sub(FS, "frontend/dist")
 	r.StaticFS("/static", http.FS(staticFiles))
 
-	r.MaxMultipartMemory = 800 << 20
+	r.MaxMultipartMemory = 200 << 20
 
 	r.POST("/api/v1/texts", TextsController)
 	r.GET("/api/v1/addresses", AddressesController)
 	r.GET("/uploads/:path", UploadsController)
 	r.GET("/api/v1/qrcodes", QrcodesController)
 	r.POST("/api/v1/files", FilesController)
+
 	r.GET("/ws", func(ctx *gin.Context) {
 		ws.HttpController(ctx, hub)
 	})
