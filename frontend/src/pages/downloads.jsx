@@ -1,20 +1,23 @@
-import { useQuery } from "../hooks/use_query";
-import { BigTextarea, Button, Header, Layout } from "./home/components";
-import styled from "styled-components";
-import { Center } from "../components/center";
-import { Space } from "../components/space";
-import { useState } from "react";
-import { useRef } from "react";
-import { useEffect } from "react";
-import { http } from "../shared/http";
-import { history } from "../shared/history";
+import { useQuery } from '../hooks/use_query'
+import { BigTextarea, Button, Header, Layout } from './home/components'
+import styled from 'styled-components'
+import { Center } from '../components/center'
+import { Space } from '../components/space'
+import { useState } from 'react'
+import { useRef } from 'react'
+import { useEffect } from 'react'
+import { http } from '../shared/http'
+import { history } from '../shared/history'
 
 export const Downloads = () => {
   const query = useQuery()
   const type = normalizeType(query.type)
-  const [text, setText] = useState("")
+
+  console.log('type', type)
+
+  const [text, setText] = useState('')
   useEffect(() => {
-    if (type === "text") {
+    if (type === 'text') {
       http.get(query.url).then(({ data }) => {
         setText(data)
       })
@@ -33,12 +36,14 @@ export const Downloads = () => {
           </Center>
         </div>
       )
-      break;
+      break
     case 'file':
       node = (
         <Center virtical>
           <a href={query.url}>
-            <svg><use xlinkHref="#icon-file"></use></svg>
+            <svg>
+              <use xlinkHref='#icon-file'></use>
+            </svg>
             <Space />
             <Center>
               <Button>点击下载文件</Button>
@@ -46,7 +51,7 @@ export const Downloads = () => {
           </a>
         </Center>
       )
-      break;
+      break
     case 'image':
       node = (
         <Center>
@@ -58,10 +63,10 @@ export const Downloads = () => {
           </a>
         </Center>
       )
-      break;
+      break
   }
   const onClickUpload = () => {
-    history.push("/")
+    history.push('/')
   }
   return (
     <Layout>
@@ -73,7 +78,7 @@ export const Downloads = () => {
       </Center>
     </Layout>
   )
-};
+}
 const Picture = styled.img`
   border: 2px solid ${({ theme }) => theme.borderColor};
   margin: 16px;

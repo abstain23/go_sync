@@ -36,7 +36,9 @@ const Main = () => {
 
   useEffect(() => {
     document.onkeydown = function (e) {
-      e.preventDefault()
+      if (e.key === 'F12') {
+        e.preventDefault()
+      }
     }
 
     document.oncontextmenu = function (e) {
@@ -45,8 +47,10 @@ const Main = () => {
   }, [])
 
   useEffect(() => {
+    console.log('effect')
     getWsClient().then(c => {
       c.onMessage(data => {
+        console.log('data', data)
         const { url, type } = data
         if (data.clientId !== clientId) {
           const content = addr =>
@@ -54,6 +58,7 @@ const Main = () => {
             `http://${addr}:27149/static/downloads?type=${type}&url=${encodeURIComponent(
               `http://${addr}:27149${url}`
             )}`
+          console.log('type', type)
           if (type === 'text') {
             showUploadTextSuccessDialog({ context, content })
           } else {
