@@ -14,6 +14,23 @@ import (
 //go:embed frontend/dist/*
 var FS embed.FS
 
+func CatchPanic() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("panic: %v\n", r)
+
+				ctx.JSON(http.StatusInternalServerError, gin.H{})
+
+				ctx.Abort()
+			}
+
+		}()
+
+		ctx.Next()
+	}
+}
+
 func StartGinServer() {
 
 	hub := ws.NewHub()
@@ -21,6 +38,9 @@ func StartGinServer() {
 
 	gin.SetMode(gin.DebugMode)
 	r := gin.Default()
+
+	r.Use(CatchPanic())
+
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{
 			"msg": "ok",
