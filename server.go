@@ -61,6 +61,10 @@ func StartGinServer() {
 		ws.HttpController(ctx, hub)
 	})
 
+	r.GET("/ws_ping", func(ctx *gin.Context) {
+		ws.HttpController2(ctx, chChromeDie, chBackendDie)
+	})
+
 	r.NoRoute(func(c *gin.Context) {
 		path := c.Request.URL.Path
 		if strings.HasPrefix(path, "/static/") {

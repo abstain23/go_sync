@@ -43,6 +43,9 @@ var defaultChromeArgs = []string{
 
 // go build -ldflags -H=windowsgui .
 
+var chChromeDie = make(chan struct{})
+var chBackendDie = make(chan struct{})
+
 func LocateChrome() string {
 
 	// If env variable "LORCACHROME" specified and it exists
@@ -110,18 +113,19 @@ func startBrowser(chChromeDie chan struct{}, chBackendDie chan struct{}) {
 	cmd.Start()
 	go func() {
 		<-chBackendDie
-		cmd.Process.Kill()
+		fmt.Println("backend die")
+		err := cmd.Process.Kill()
+		fmt.Printf("kill err: %v\n", err)
 	}()
 	go func() {
-		cmd.Wait()
+		cmd.Process.Wait()
+		fmt.Println("chrmoe die")
 		chChromeDie <- struct{}{}
 	}()
 }
 
 func main() {
 
-	chChromeDie := make(chan struct{})
-	chBackendDie := make(chan struct{})
 	chSignal := listenToInterrupt()
 
 	go StartGinServer()

@@ -68,6 +68,21 @@ const Main = () => {
       })
     })
   }, [])
+
+  useEffect(() => {
+    const url = `ws://${window.location.hostname}:27149/ws_ping`;
+    const wsClient = new WebSocket(url);
+    wsClient.onerror = err => {
+      console.log('err',err)
+    }
+    wsClient.onmessage = ({data}) => {
+      console.log('data',data)
+      if(data === 'ping') {
+        wsClient.send(JSON.stringify('pong'))
+      } 
+    }
+  }, [])
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyle />
